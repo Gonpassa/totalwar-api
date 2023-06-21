@@ -1,50 +1,28 @@
-const express = require('express')
-const app = express()
-const cors = require('cors')
-const PORT = 5000
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const PORT = 5000;
+const api = require("./controller/api");
 
-app.use(cors()) 
+app.use(cors());
+app.use(express.json());
 
-const legendaryLords = {
-    'tyrion': {
-        'race': 'High Elves',
-        'faction': 'Eataine',
-        'statistics': {
-            Health:	4280,
-            Leadership:	85,
-            'Melee Attack':	75,
-            'Melee Defense':60,
-        }
-    },
-    'unknown': {
-        'race': 'unknown',
-        faction: 'unknown'
-    },
-    'grom the paunch': {
-        'race': 'Greenskins',
-        'faction': 'Broken Axe ',
-        'statistics': {
-            Health:	5248,
-            Leadership:	70,
-            'Melee Attack':	40,
-            'Melee Defense':30,
-        }
-    }
-}
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
-})
+app.post("/api", api.submitMessage);
 
-app.get('/api/:name', (req, res) => {
-    const lord = req.params.name.toLowerCase().trim()
-    if(legendaryLords[lord]){
-        res.json(legendaryLords[lord])
-    }else{
-        res.json(legendaryLords['unknown'])
-    }
-})
+app.get("/api/:text", async (req, res) => {
+  messages.push(req.params.text.toLowerCase().trim());
+  try {
+    const result = await generateResponse(messages);
+    return res.json(result);
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
 
 app.listen(process.env.PORT || PORT, () => {
-    console.log('server listening on PORT ' + PORT)
-})
+  console.log("server listening on PORT " + PORT);
+});
